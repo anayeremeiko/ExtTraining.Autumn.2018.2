@@ -15,8 +15,7 @@ namespace No8.Solution.Tests
         public void Logger_Log(string name)
         {
             Logger log = new Logger(name);
-            PrintersRepository repo = new PrintersRepository();
-            PrinterManager manager = new PrinterManager(repo);
+            PrinterManager manager = new PrinterManager();
             var printer = new CanonPrinter("1G");
             log.Register(manager);
             manager.Add(printer);

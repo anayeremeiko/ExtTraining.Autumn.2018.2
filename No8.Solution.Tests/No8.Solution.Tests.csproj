@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Include="LoggerTests.cs" />
     <Compile Include="PrinterManagerTests.cs" />
-    <Compile Include="PrintersRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

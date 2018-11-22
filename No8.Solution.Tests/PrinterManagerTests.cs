@@ -12,8 +12,7 @@ namespace No8.Solution.Tests
         [Test]
         public void AddPrinterWithExistingModel_ThrowInvalidOperationException()
         {
-            PrintersRepository repo = new PrintersRepository();
-            PrinterManager manager = new PrinterManager(repo);
+            PrinterManager manager = new PrinterManager();
             manager.Add(new CanonPrinter("123x"));
             Assert.Throws<InvalidOperationException>(() => manager.Add(new CanonPrinter("123x")));
         }
@@ -21,8 +20,7 @@ namespace No8.Solution.Tests
         [Test]
         public void Print_ThrowFileNotFoundException()
         {
-            PrintersRepository repo = new PrintersRepository();
-            PrinterManager manager = new PrinterManager(repo);
+            PrinterManager manager = new PrinterManager();
             var printer = new CanonPrinter("123x");
             manager.Add(printer);
             Assert.Throws<FileNotFoundException>(() => manager.Print(printer, "error.txt"));
@@ -31,8 +29,7 @@ namespace No8.Solution.Tests
         [Test]
         public void Print_PrintFile()
         {
-            PrintersRepository repo = new PrintersRepository();
-            PrinterManager manager = new PrinterManager(repo);
+            PrinterManager manager = new PrinterManager();
             var printer = new CanonPrinter("123x");
             manager.Add(printer);
             string text = "Some text...";
@@ -61,8 +58,7 @@ namespace No8.Solution.Tests
         [Test]
         public void GetAllPrinters_ReturnAvailablePrinters()
         {
-            PrintersRepository repo = new PrintersRepository();
-            PrinterManager manager = new PrinterManager(repo);
+            PrinterManager manager = new PrinterManager();
             manager.Add(new CanonPrinter("1G"));
             manager.Add(new EpsonPrinter("231"));
             manager.Add(new CanonPrinter("5K"));
@@ -70,6 +66,48 @@ namespace No8.Solution.Tests
 
             CollectionAssert.AreEqual(new Printer[] { new CanonPrinter("1G"), new EpsonPrinter("231"), new CanonPrinter("5K"), new EpsonPrinter("K505U") }, manager.GetAllPrinters(), Comparer<Printer>.Create((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal)));
             CollectionAssert.AreEqual(new Printer[] { new CanonPrinter("1G"), new EpsonPrinter("231"), new CanonPrinter("5K"), new EpsonPrinter("K505U") }, manager.GetAllPrinters(), Comparer<Printer>.Create((p1, p2) => string.Compare(p1.Model, p2.Model, StringComparison.Ordinal)));
+        }
+
+        [Test]
+        public void GetByName_ReturnCanon()
+        {
+            PrinterManager manager = new PrinterManager();
+            manager.Add(new CanonPrinter("1G"));
+            manager.Add(new EpsonPrinter("231"));
+
+            Assert.AreEqual(new CanonPrinter("1G").Name, manager.GetByName("Canon").Name);
+            Assert.AreEqual(new CanonPrinter("1G").Model, manager.GetByName("Canon").Model);
+        }
+
+        [Test]
+        public void GetByModel_Success()
+        {
+            PrinterManager manager = new PrinterManager();
+            manager.Add(new CanonPrinter("1G"));
+            manager.Add(new EpsonPrinter("231"));
+
+            Assert.AreEqual(new EpsonPrinter("231").Name, manager.GetByModel("231").Name);
+            Assert.AreEqual(new CanonPrinter("231").Model, manager.GetByModel("231").Model);
+        }
+
+        [Test]
+        public void GetByName_NotExistingName()
+        {
+            PrinterManager manager = new PrinterManager();
+            manager.Add(new CanonPrinter("1G"));
+            manager.Add(new EpsonPrinter("231"));
+
+            Assert.AreEqual(null, manager.GetByName("231"));
+        }
+
+        [Test]
+        public void GetByModel_NotExistingModel()
+        {
+            PrinterManager manager = new PrinterManager();
+            manager.Add(new CanonPrinter("1G"));
+            manager.Add(new EpsonPrinter("231"));
+
+            Assert.AreEqual(null, manager.GetByModel("Canon"));
         }
     }
 }
